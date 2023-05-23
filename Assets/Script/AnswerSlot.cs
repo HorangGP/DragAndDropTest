@@ -12,15 +12,15 @@ public class AnswerSlot : MonoBehaviour, IDropHandler
 
 	[SerializeField] DragSystem dragSystem;
 
-	bool fullSlot = false;
+	[HideInInspector] public bool fullSlot = false;
 
 	public void OnDrop(PointerEventData eventData)
 	{
 		GameObject dropped = eventData.pointerDrag;
 
-		if (dropped.GetComponent<DragSystem>() != null)
+		if (!fullSlot)
 		{
-			if (!fullSlot)
+			if (dropped.GetComponent<DragSystem>() != null)
 			{
 				dragSystem = dropped.GetComponent<DragSystem>();
 				image.sprite = dragSystem.image.sprite;
@@ -35,7 +35,15 @@ public class AnswerSlot : MonoBehaviour, IDropHandler
 		}
 		else
 		{
-			return;
+			if (dropped.GetComponent<AnswerDrag>() != null)
+			{
+				AnswerDrag answerDrag = dropped.GetComponent<AnswerDrag>();
+				answerDrag.OutBoxCheck(false);
+			}
+			else
+			{
+				return;
+			}
 		}
 	}
 
